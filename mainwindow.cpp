@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     srand((unsigned)time(NULL));
     displayOut = QPixmap(500, 500);
     display = QImage(500, 500, QImage::Format_ARGB32);
+    shootButton = QRect(0,0,500,250);
     moveLeft = new QShortcut(this);
     moveRigth = new QShortcut(this);
     shoot = new QShortcut(this);
@@ -177,16 +178,38 @@ void MainWindow::blinklost()
         ui->lostlabel->show();
 }
 
-void MainWindow::moveleft()
+void MainWindow::mouseMoveEvent(QMouseEvent *event)
 {
-    if(player.x()>=5)
-        player.setRect(player.x()-5, player.y(), player.width(), player.height());
+    if(event->pos().x()<previous.x())
+        moveleft(previous.x()-event->pos().x());
+    else if(event->pos().x()>previous.x())
+        moverigth(event->pos().x()-previous.x());
+    if(0<event->pos().x()&&event->pos().x()<470)
+        previous = event->pos();
 }
 
-void MainWindow::moverigth()
+void MainWindow::mouseReleaseEvent(QMouseEvent *event)
 {
-    if(player.x()<=475)
-        player.setRect(player.x()+5, player.y(), player.width(), player.height());
+    if(shootButton.contains(event->pos()))
+        shootf();
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *event)
+{
+    if(0<event->pos().x()&&event->pos().x()<470)
+        previous = event->pos();
+}
+
+void MainWindow::moveleft(int i)
+{
+    if(player.x()>=i)
+        player.setRect(player.x()-i, player.y(), player.width(), player.height());
+}
+
+void MainWindow::moverigth(int i)
+{
+    if(player.x()<=470+i)
+        player.setRect(player.x()+i, player.y(), player.width(), player.height());
 }
 
 void MainWindow::shootf()

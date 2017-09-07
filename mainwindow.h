@@ -8,6 +8,7 @@
 #include <QShortcut>
 #include <QTimer>
 #include "ui_main.h"
+#include <QMouseEvent>
 
 class MainWindow : public QMainWindow
 {
@@ -19,8 +20,8 @@ public:
     void setupTimers();
 
 public slots:
-    void moveleft();
-    void moverigth();
+    void moveleft(int i = 5);
+    void moverigth(int i = 5);
     void shootf();
     void projectile();
     void render();
@@ -36,12 +37,17 @@ Q_SIGNALS:
     void hit();
 
 private:
+    void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+
     bool paused;
     int score = 0;
+    QPoint previous;
     QString scorestring;
     QPixmap displayOut;
     QImage display;
-    QRect player;
+    QRect player, shootButton;
     QShortcut *moveLeft, *moveRigth, *shoot, *pause;
     QTimer *renderTimer, *projectileTimer, *enemyTimer, *losttimer;
     QList<QRect> enemys, projectiles;
